@@ -1,9 +1,11 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 const Categorie=require("../models/categorie")
+const {verifyToken} =require("../middleware/verifyToken")
+const {authorizeRoles} = require("../middleware/authorizeRoles")
 
 // créer un nouvelle catégorie
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, authorizeRoles("admin","visiteurs"), async (req, res) => {
     const newCategorie = new Categorie(req.body)
     try {
         await newCategorie.save();

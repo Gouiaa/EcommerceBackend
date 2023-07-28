@@ -1,7 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const User=require("../models/user");
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const nodemailer=require('nodemailer') /// hethya lil vérification ta3 il email 
+
+var transporter =nodemailer.createTransport({  /// hetha il code mat3haa 
+    service:'gmail',
+    auth:{
+    user:'esps421@gmail.com',
+    pass:'egpjaquqgdtpafam' /// hetha jebneh mil google (voir les étapes sur cours)
+    },
+    tls:{
+    rejectUnauthorized:false
+    }
+})
 
 // créer un nouvel utilisateur
 router.post('/register', async (req, res) => {  // register khater jdid 
@@ -9,8 +21,29 @@ try {
 let { email, password, firstname, lastname } = req.body // il faut vérifier l'email 
 const user = await User.findOne({ email }) // await besh maynagezich 
 if (user) return res.status(404).send({ success: false, message: "User already exists" }) // hetha khater il email mawjoud 
-const newUser = new User({ email, password, firstname, lastname }) // hetha new user 
+
+const newUser = new User({ email, password, firstname, lastname }) //  hetha new user 
 const createdUser = await newUser.save() // houni besh tesn3 user 
+
+// Envoyer l'e-mail de confirmation de l'inscription
+var mailOption ={
+    from: '"verify your email " <esps421@gmail.com>',
+    to: newUser.email,
+    subject: 'vérification your email ',
+    html:`<h2>${newUser.firstname}! thank you for registreting on our website</h2>
+    <h4>please verify your email to procced.. </h4>
+    <a
+    href="http://${req.headers.host}/api/users/status/edit?email=${newUser.email}">click here</a>`
+    }
+    transporter.sendMail(mailOption,function(error,info){
+    if(error){
+    console.log(error)
+    }
+    else{
+    console.log('verification email sent to your gmail account ')
+    }
+    })
+
 return res.status(201).send({ success: true, message: "Account created successfully", user: createdUser })
 } catch (err) { // c no error
 console.log(err)

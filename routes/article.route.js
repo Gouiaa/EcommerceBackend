@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Article=require("../models/article")
+const Article=require("../models/article");
+
 
 // afficher la liste des articles.
 router.get('/', async (req, res )=> {
@@ -39,7 +40,7 @@ router.get('/', async (req, res )=> {
     
 
 // créer un nouvel article
-router.post('/', async (req, res) =>  {
+router.post('/',async (req, res) =>  { /// tji fil post khater admin 
     
     const nouvarticle = new Article(req.body)
     const articles = await Article.findById(response._id).populate("scategorieID").exec();

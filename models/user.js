@@ -25,7 +25,7 @@ default: "user"
 },
     isActive: {
 type: Boolean,
-default: false, /// houya ki yamel compte n'est pa encore activer 
+default: true, /// houya ki yamel compte n'est pa encore activer 
 required: false
 },
     avatar :{ // image
